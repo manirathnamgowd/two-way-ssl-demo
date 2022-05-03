@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ecb74f8e-0bfa-4686-824e-d3f3f10466d5" >
+		<http:listener-connection protocol="HTTPS" host="0.0.0.0" port="8081" >
+			<tls:context >
+				<tls:key-store type="jks" path="server-keystore.jks" alias="muleserver" keyPassword="password" password="password" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<flow name="server" doc:id="6fcb9bbc-2817-402d-a947-709d0f82769e" >
+		<http:listener doc:name="Listener" doc:id="5221febc-3645-4bcb-9fc0-0ed1aa2a2ab4" config-ref="HTTP_Listener_config" path="/two-way-test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5aad87b1-e1b3-4c97-a8a2-56d7eaa6e9d3" message="Request received !"/>
+		<ee:transform doc:name="Transform Message" doc:id="10f239a4-0a0f-4b7a-901d-cdfdea0386cd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Request received in Two Way SSl Application."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
